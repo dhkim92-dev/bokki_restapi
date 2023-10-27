@@ -15,7 +15,7 @@ export class OAuth2ClientFactory {
    * @param {string} provider name of OAuth2 provider. only alphabet.
    * @return {OAuth2Client | null}
    */
-  build(provider : string) : OAuth2Client | null {
+  build(provider : string) : OAuth2Client {
     const platform = provider.toLowerCase();
     if (platform === "kakao") {
       return new KakaoOAuth2Client(KAKAO_URL);
@@ -25,6 +25,6 @@ export class OAuth2ClientFactory {
     // }else if(platform == 'naver') {
     // }else if(platform == 'google') {
     // }
-    return null;
+    throw new Error("Not Supported Provider")
   }
 }

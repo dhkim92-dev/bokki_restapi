@@ -21,7 +21,7 @@ export const NO_PLATFORM_PROVIDED : ApiResponse = {
   code: "A-000",
   payload: null,
   message: null,
-  error: "인증 플랫폼이 명시되지 않았습니다. (ex. naver, kakao, google)",
+  error: "인증 플랫폼이 명시되지 않았습니다. (ex. naver, kakao, google).",
 };
 
 export const NO_ACCESS_TOKEN : ApiResponse = {
@@ -29,7 +29,7 @@ export const NO_ACCESS_TOKEN : ApiResponse = {
   code: "A-001",
   payload: null,
   message: null,
-  error: "Access token이 제공되어야 합니다",
+  error: "Request body에 access_token이 제공되어야 합니다.",
 };
 
 export const INVALID_ACCESS_TOKEN : ApiResponse = {
@@ -37,7 +37,7 @@ export const INVALID_ACCESS_TOKEN : ApiResponse = {
   code: "A-002",
   payload: null,
   message: null,
-  error: "Invalid Access token",
+  error: "잘못된 Access Token",
 };
 
 export const NO_USER_FOUND : ApiResponse = {
@@ -45,5 +45,13 @@ export const NO_USER_FOUND : ApiResponse = {
   code: "A-003",
   payload: null,
   message: null,
-  error: "리소스 서버에 해당 유저 정보가 없습니다",
+  error: "리소스 서버에 해당 유저 정보가 없습니다.",
+};
+
+export const NOT_SUPPORTED_PROVIDER : ApiResponse = {
+  status: 400,
+  code: "A-004",
+  payload: null,
+  message: null,
+  error: "지원하지 않는 OAuth2 Provider 입니다.",
 };

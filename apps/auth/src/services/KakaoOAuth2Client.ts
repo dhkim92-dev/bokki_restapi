@@ -2,7 +2,7 @@ import {logger} from "firebase-functions/v1";
 import {MemberProfile} from "../domain/UserProfile";
 import {OAuth2Client} from "./OAuth2Client";
 import axios from "axios";
-import * as crypto from "crypto";
+import {randomUUID} from "crypto";
 
 
 /**
@@ -51,7 +51,7 @@ export class KakaoOAuth2Client extends OAuth2Client {
     }
 
     logger.debug("KakaoOAuth2Client user id : ", userId);
-    const uuid = crypto.randomUUID().toString;
+    const uuid = randomUUID().toString();
     // TODO Kakao Application 등록 후 삭제
     const memberProfile : MemberProfile = {
       provider: "kakao",

@@ -7,6 +7,7 @@ import {OAuth2ClientFactory} from "./services/OAuth2ClientFactory";
 import {sendMessage} from "./utils/response";
 import {INTERNAL_SERVER_ERROR,
   NOT_SUPPORTED_METHOD,
+  NOT_SUPPORTED_PROVIDER,
   NO_ACCESS_TOKEN,
   NO_PLATFORM_PROVIDED,
   NO_USER_FOUND} from "./constants/ErrorCode";
@@ -14,7 +15,7 @@ import {CUSTOM_TOKEN_PUBLISHED} from "./constants/SuccessCode";
 import * as cors from "cors";
 
 const corsConfig = cors({
-  origin: ["http://localhost:3000"],
+  origin: ["http://localhost:3000", "https://asia-northeast1-bokki-35963.cloudfunctions.net"],
 });
 
 admin.initializeApp({
@@ -67,7 +68,9 @@ exports.authentication = region("asia-northeast1")
       }
 
       logger.debug("body : ", JSON.stringify(req.body));
-      const provider = req.body.provider;
+      logger.debug("BaseUrl : " + req.baseUrl);
+      logger.debug("OriginalUrl : " + req.originalUrl);
+      const provider = req.originalUrl.replace("/", "");
       const accessToken = req.body.access_token;
 
       if (!provider) {
@@ -80,9 +83,21 @@ exports.authentication = region("asia-northeast1")
         return;
       }
 
-      new OAuth2ClientFactory().build(provider)
-        .authenticate(accessToken)
+      let client;
+      try {
+        client = new OAuth2ClientFactory().build(provider);
+      } catch (error) {
+        logger.error(error);
+        if(error.message == "Not Supported Provider") {
+          sendMessage(res, NOT_SUPPORTED_PROVIDER);
+        }
+        sendMessage(res, INTERNAL_SERVER_ERROR);
+        return ;
+      }
+
+      client.authenticate(accessToken)
         .then((memberProfile) => {
+          logger.debug("MemberProfile : " + JSON.stringify(memberProfile));
           upsertMember(memberProfile)
             .then((userRecord) => {
               createCustomToken(userRecord, memberProfile).then((token) => {
